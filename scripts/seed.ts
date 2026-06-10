@@ -3,6 +3,7 @@ import { neon } from '@neondatabase/serverless';
 import * as schema from '../web/lib/db/schema';
 import * as dotenv from 'dotenv';
 
+dotenv.config({ path: '.env.local' });
 dotenv.config({ path: './web/.env.local' });
 
 if (!process.env.DATABASE_URL) {
