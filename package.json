@@ -1,0 +1,15 @@
+{
+  "name": "savora",
+  "private": true,
+  "workspaces": [
+    "web",
+    "mobile",
+    "packages/shared"
+  ],
+  "scripts": {
+    "web:dev": "npm run dev -w web",
+    "web:build": "npm run build -w web",
+    "mobile:start": "npm start -w mobile",
+    "seed": "npm run seed -w web"
+  }
+}
