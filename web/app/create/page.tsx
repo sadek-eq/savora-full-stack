@@ -3,8 +3,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { Plus, Trash2, Save, ChefHat, Clock, Users, Flame } from "lucide-react";
 import { toast } from "sonner";
 
@@ -45,7 +45,7 @@ export default function CreateRecipePage() {
       });
       const data = await res.json();
       if (data.id) {
-        toast.success("Recipe created!");
+        toast.success("Recipe created successfully!");
         router.push(`/recipe/${data.id}`);
       }
     } catch (error) {
@@ -63,7 +63,7 @@ export default function CreateRecipePage() {
         </div>
         <div>
           <h1 className="text-4xl font-serif font-bold">Create New Recipe</h1>
-          <p className="text-muted-foreground">Share your culinary masterpiece.</p>
+          <p className="text-muted-foreground">Share your culinary masterpiece with the world.</p>
         </div>
       </div>
 
@@ -73,7 +73,8 @@ export default function CreateRecipePage() {
             <div className="space-y-2">
               <Label>Recipe Title</Label>
               <Input
-                placeholder="Grandma's Famous Lasagna"
+                placeholder="e.g. Grandma's Famous Lasagna"
+                className="text-xl font-bold py-6 rounded-xl"
                 value={recipe.title}
                 onChange={(e) => setRecipe({ ...recipe, title: e.target.value })}
               />
@@ -81,35 +82,107 @@ export default function CreateRecipePage() {
             <div className="space-y-2">
               <Label>Description</Label>
               <Textarea
-                placeholder="The story behind this dish..."
+                placeholder="Tell us the story behind this dish..."
+                className="min-h-[120px] rounded-xl"
                 value={recipe.description}
                 onChange={(e) => setRecipe({ ...recipe, description: e.target.value })}
               />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Category</Label>
+                <select
+                  className="w-full bg-muted border-none rounded-xl px-4 py-2"
+                  value={recipe.category}
+                  onChange={(e) => setRecipe({ ...recipe, category: e.target.value })}
+                >
+                  <option value="breakfast">Breakfast</option>
+                  <option value="lunch">Lunch</option>
+                  <option value="dinner">Dinner</option>
+                  <option value="dessert">Dessert</option>
+                </select>
+              </div>
             </div>
           </section>
 
           <section className="bg-card p-8 rounded-3xl border shadow-sm space-y-6">
             <h2 className="text-2xl font-serif font-bold">Ingredients</h2>
-            {ingredients.map((ing, i) => (
-              <div key={i} className="flex gap-2">
-                <Input placeholder="Qty" className="w-20" value={ing.quantity} onChange={(e) => {
-                  const n = [...ingredients]; n[i].quantity = e.target.value; setIngredients(n);
-                }} />
-                <Input placeholder="Unit" className="w-24" value={ing.unit} onChange={(e) => {
-                  const n = [...ingredients]; n[i].unit = e.target.value; setIngredients(n);
-                }} />
-                <Input placeholder="Name" className="flex-1" value={ing.name} onChange={(e) => {
-                  const n = [...ingredients]; n[i].name = e.target.value; setIngredients(n);
-                }} />
-                <Button variant="ghost" size="icon" onClick={() => removeIngredient(i)}><Trash2 size={16}/></Button>
-              </div>
-            ))}
-            <Button variant="outline" className="w-full" onClick={addIngredient}><Plus size={16} className="mr-2"/> Add Ingredient</Button>
+            <div className="space-y-4">
+              {ingredients.map((ing, i) => (
+                <div key={i} className="flex gap-2">
+                  <Input
+                    placeholder="Qty"
+                    className="w-20 rounded-xl"
+                    value={ing.quantity}
+                    onChange={(e) => {
+                      const newIngs = [...ingredients];
+                      newIngs[i].quantity = e.target.value;
+                      setIngredients(newIngs);
+                    }}
+                  />
+                  <Input
+                    placeholder="Unit"
+                    className="w-24 rounded-xl"
+                    value={ing.unit}
+                    onChange={(e) => {
+                      const newIngs = [...ingredients];
+                      newIngs[i].unit = e.target.value;
+                      setIngredients(newIngs);
+                    }}
+                  />
+                  <Input
+                    placeholder="Ingredient name"
+                    className="flex-1 rounded-xl"
+                    value={ing.name}
+                    onChange={(e) => {
+                      const newIngs = [...ingredients];
+                      newIngs[i].name = e.target.value;
+                      setIngredients(newIngs);
+                    }}
+                  />
+                  <Button variant="ghost" size="icon" onClick={() => removeIngredient(i)} className="text-muted-foreground">
+                    <Trash2 className="h-5 w-5" />
+                  </Button>
+                </div>
+              ))}
+              <Button variant="outline" className="w-full rounded-xl" onClick={addIngredient}>
+                <Plus className="mr-2 h-4 w-4" /> Add Ingredient
+              </Button>
+            </div>
+          </section>
+
+          <section className="bg-card p-8 rounded-3xl border shadow-sm space-y-6">
+            <h2 className="text-2xl font-serif font-bold">Instructions</h2>
+            <div className="space-y-6">
+              {steps.map((step, i) => (
+                <div key={i} className="space-y-4 p-4 bg-muted/30 rounded-2xl relative">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-primary">Step {i + 1}</span>
+                    <Button variant="ghost" size="sm" onClick={() => removeStep(i)} className="text-muted-foreground">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <Textarea
+                    placeholder="Explain this step..."
+                    className="rounded-xl"
+                    value={step.instruction}
+                    onChange={(e) => {
+                      const newSteps = [...steps];
+                      newSteps[i].instruction = e.target.value;
+                      setSteps(newSteps);
+                    }}
+                  />
+                </div>
+              ))}
+              <Button variant="outline" className="w-full rounded-xl" onClick={addStep}>
+                <Plus className="mr-2 h-4 w-4" /> Add Step
+              </Button>
+            </div>
           </section>
         </div>
 
         <div className="space-y-8">
-          <Button className="w-full py-8 text-xl rounded-2xl shadow-xl" disabled={loading} onClick={handleSubmit}>
+          <Button className="w-full py-8 text-xl rounded-2xl shadow-xl shadow-primary/20" disabled={loading} onClick={handleSubmit}>
             <Save className="mr-2 h-6 w-6" /> {loading ? "Publishing..." : "Publish Recipe"}
           </Button>
         </div>
